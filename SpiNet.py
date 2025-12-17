@@ -4,6 +4,7 @@ from email.mime.text import MIMEText # Multipurpose Internet Mail Extensions
 import json
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from tqdm import tqdm
 
 # Configuration
 NETWORK_RANGE = ''              # IP address range on local network
@@ -95,8 +96,8 @@ def send_alert(subject, msg):
     email['From']=EMAIL_FROM
     email['To']=EMAIL_TO
 
-    with smtplib.SMTP(SMPT_SRVR, SMTP_PORT) as smtp_serv:
-        smtp_serv.login(EMAIL_FROM, SMTP_PASS)
+    with smtplib.SMTP_SSL(SMPT_SRVR, SMTP_PORT) as smtp_serv:
+        smtp_serv.auth_login(EMAIL_FROM, SMTP_PASS)
         smtp_serv.sendmail(EMAIL_FROM, EMAIL_TO, email.as_string())
 
 
@@ -127,15 +128,22 @@ def log_vulns(vulns):
 
 
 def main():
+    print(f"[{datetime.now(TIME_ZONE)}] Starting SpiNet scan...")
     baseline=load_baseline()
     current=scan_network()
-    
+    print(f"Found {len(current)} device(s) on the network.")
+
     save_baseline(current)
     detect_changes(current, baseline)
+    print("Baseline updated.")
 
-    for host in current:
-        check_vulnerabilities(host['ip'])
-
+    if current:
+        print(f"Starting vulnerability scans on {len(current)} device(s)...")
+        for host in tqdm(current, desc="Scanning", unit="device"):
+            check_vulnerabilities(host['ip'])
+        print("All scans complete!")
+    else:
+        print("No devices found on the network.")
 
 if __name__ == "__main__":
     main()

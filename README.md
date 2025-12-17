@@ -32,6 +32,7 @@ All activity is logged with timestamps for easy review.
    ```bash
    sudo apt install nmap python3-pip -y
    pip3 install python-nmap
+   pip3 install tqdm
    ```
 3. Create the project directory and script
    ```bash
