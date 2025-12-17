@@ -59,16 +59,24 @@ Manual Test Run
 (Press Ctrl+C to stop)
 
 Scheduling with Cron (Recommended)
+
 Option 1: Run continuously on boot (ideal for frequent scans)
+
 The script uses an infinite loop with time.sleep(). Start it automatically:
     Bashcrontab -e
+
 Add this line:
     text@reboot /usr/bin/python3 /home/pi/SpiNet/spinet.py >> /home/pi/SpiNet/spinet.log 2>&1
+
 This launches SpiNet on every reboot and logs output to spinet.log.
+
 Option 2: Periodic scheduled runs
+
 If you prefer discrete scans (e.g., every 30 minutes), modify the script to run once (remove the infinite loop) or add a command-line flag.
+
 Then schedule:
     Bashcrontab -e
+
 Add:
     text*/30 * * * * /usr/bin/python3 /home/pi/SpiNet/spinet.py >> /home/pi/SpiNet/spinet.log 2>&1
 
