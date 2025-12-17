@@ -97,7 +97,7 @@ def send_alert(subject, msg):
     email['To']=EMAIL_TO
 
     with smtplib.SMTP_SSL(SMPT_SRVR, SMTP_PORT) as smtp_serv:
-        smtp_serv.auth_login(EMAIL_FROM, SMTP_PASS)
+        smtp_serv.login(EMAIL_FROM, SMTP_PASS)
         smtp_serv.sendmail(EMAIL_FROM, EMAIL_TO, email.as_string())
 
 
