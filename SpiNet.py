@@ -18,13 +18,18 @@ TIME_ZONE = ''                  # Current time zone (for keeping logs)
 
 def scan_network():
     nm = nmap.PortScanner()
-    nm.scan(hosts=NETWORK_RANGE, arguments='-sn') # Host discovery only; no port scanning
-    hosts=[]
-    # Populate hosts with all currently connected hosts
+    nm.scan(hosts=NETWORK_RANGE, arguments='-sn -PR')  # ARP ping for MACs
+    hosts = []
     for host in nm.all_hosts():
+        hostname = nm[host].hostname() or "Unknown"
+        mac = nm[host]['addresses'].get('mac', None)
+        vendor = nm[host]['vendor'].get(mac.upper(), "Unknown") if mac else "Unknown"
+        
         hosts.append({
             'ip': host,
-            'hostname': nm[host].hostname(),
+            'hostname': hostname,
+            'mac': mac or "N/A",
+            'vendor': vendor,
             'status': nm[host].state()
         })
     return hosts
@@ -50,7 +55,7 @@ def check_vulnerabilities(host):
     # Log vulnerabilities and send an email alert
     if vulns:
         log_vulns(vulns)
-        alert_msg=f"Vulnerabilities have been discovered on {host['hostname']}: {vulns}"
+        alert_msg=f"Vulnerabilities have been discovered on the network: {vulns}"
         send_alert("Vulnerabilities Found", alert_msg)
 
 
@@ -81,7 +86,7 @@ def detect_changes(current, baseline):
     # If any current host was not previously connected to the network, add it to the list
     for h in current:
         if h['ip'] not in old_hosts:
-            new_hosts.append(f"\n{h['hostname']}: {h}")
+            new_hosts.append(h)
     
     # If new host list is not empty, alert the user
     if new_hosts:
