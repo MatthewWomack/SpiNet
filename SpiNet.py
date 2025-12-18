@@ -34,7 +34,32 @@ def scan_network():
         })
     return hosts
 
+def check_vulnerabilities(host):
+    host_ip = host['ip']
+    hostname = host['hostname'] if host['hostname'] else "Unknown"
+    
+    nm = nmap.PortScanner()
+    nm.scan(host_ip, arguments='-sV --script vuln')
+    vulns = []
+    
+    for proto in nm[host_ip].all_protocols():
+        for port in nm[host_ip][proto]:
+            if 'script' in nm[host_ip][proto][port]:
+                for script_id, output in nm[host_ip][proto][port]['script'].items():
+                    if 'vuln' in script_id.lower() and 'ERROR: Script execution failed' not in output:
+                        vulns.append(f"Port {port}: {output.strip()}")
 
+    if vulns:
+        # Build a nice multi-line message
+        header = f"Vulnerabilities discovered on device:\nIP: {host_ip} | Hostname: {hostname}\n"
+        vuln_details = "\n".join(vulns)
+        alert_msg = header + "\n" + vuln_details
+        
+        send_alert("Vulnerability Alert", alert_msg)
+        print(alert_msg)
+        
+        log_vulns(f"Device: {host_ip} ({hostname})\n" + "\n".join(vulns))
+"""
 def check_vulnerabilities(host):
     host_ip=host['ip']
     nm = nmap.PortScanner()
@@ -57,7 +82,7 @@ def check_vulnerabilities(host):
         log_vulns(vulns)
         alert_msg=f"Vulnerabilities have been discovered on the network: {vulns}"
         send_alert("Vulnerabilities Found", alert_msg)
-
+"""
 
 def load_baseline():
     try:
