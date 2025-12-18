@@ -50,7 +50,7 @@ def check_vulnerabilities(host):
     # Log vulnerabilities and send an email alert
     if vulns:
         log_vulns(vulns)
-        alert_msg=f"Vulnerabilities have been discovered on {host.hostname()}: {vulns}"
+        alert_msg=f"Vulnerabilities have been discovered on {host['hostname']}: {vulns}"
         send_alert("Vulnerabilities Found", alert_msg)
 
 
