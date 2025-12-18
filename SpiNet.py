@@ -81,7 +81,7 @@ def detect_changes(current, baseline):
     # If any current host was not previously connected to the network, add it to the list
     for h in current:
         if h['ip'] not in old_hosts:
-            new_hosts.append(f"\n{h.hostname()}: {h}")
+            new_hosts.append(f"\n{h['hostname']}: {h}")
     
     # If new host list is not empty, alert the user
     if new_hosts:
