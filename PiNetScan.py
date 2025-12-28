@@ -39,7 +39,7 @@ def check_vulnerabilities(host):
     hostname = host['hostname'] if host['hostname'] else "Unknown"
     
     nm = nmap.PortScanner()
-    nm.scan(host_ip, arguments='-sV --script vuln -p 1-79,81-8080')
+    nm.scan(host_ip, arguments='-sV --script vuln')
     vulns = []
     
     for proto in nm[host_ip].all_protocols():
