@@ -1,6 +1,6 @@
-# SpiNet
+# PiNetScan
 
-SpiNet is a lightweight network monitoring and vulnerability scanner built for the Raspberry Pi. It scans your local network for connected devices, detects new or unauthorized devices by comparing against a previous baseline, checks for known vulnerabilities using Nmap's scripting engine, and sends email alerts when issues are found.
+PiNetScan is a lightweight network monitoring and vulnerability scanner built for the Raspberry Pi. It scans your local network for connected devices, detects new or unauthorized devices by comparing against a previous baseline, checks for known vulnerabilities using Nmap's scripting engine, and sends email alerts when issues are found.
 
 All activity is logged with timestamps for easy review.
 
@@ -36,13 +36,13 @@ All activity is logged with timestamps for easy review.
    ```
 3. Create the project directory and script
    ```bash
-   mkdir ~/SpiNet && cd ~/SpiNet
-   nano spinet.py
+   mkdir ~/PiNetScan && cd ~/PiNetScan
+   nano PiNetScan.py
    ```
 Paste the script code and save
 
 ## Configuration
-Edit the configuration variables near the top of spinet.py:
+Edit the configuration variables near the top of PiNetScan.py:
    ```python
    NETWORK_RANGE = '192.168.1.0/24'     # Your local network range
    EMAIL_TO = 'you@example.com'        # Where alerts are sent
@@ -67,10 +67,10 @@ List available zones with:
    ```
 Leave blank ('') to use system default time.
 
-## Running SpiNet
+## Running PiNetScan
 ### Manual Test Run
    ```bash
-   python3 spinet.py
+   python3 PiNetScan.py
    ```
 This performs one full scan cycle and exits.
 
@@ -84,22 +84,22 @@ Edit your crontab:
 **Examples:**
 - Every 15 minutes:
    ```text
-   */15 * * * * /usr/bin/python3 /home/pi/SpiNet/spinet.py >> /home/pi/SpiNet/spinet.log 2>&1
+   */15 * * * * /usr/bin/python3 /home/pi/PiNetScan/PiNetScan.py >> /home/pi/PiNetScan/PiNetScan.log 2>&1
    ```
 - Every hour:
    ```text
-   0 * * * * /usr/bin/python3 /home/pi/SpiNet/spinet.py >> /home/pi/SpiNet/spinet.log 2>&1
+   0 * * * * /usr/bin/python3 /home/pi/PiNetScan/PiNetScan.py >> /home/pi/PiNetScan/PiNetScan.log 2>&1
    ```
 - Twice a day (8 AM and 8 PM):
    ```text
-   0 8,20 * * * /usr/bin/python3 /home/pi/SpiNet/spinet.py >> /home/pi/SpiNet/spinet.log 2>&1
+   0 8,20 * * * /usr/bin/python3 /home/pi/PiNetScan/PiNetScan.py >> /home/pi/PiNetScan/PiNetScan.log 2>&1
    ```
 
 ## Files Generated
 - baseline.json – Stores the last known network state (automatically managed)
 - network_activity.log – Log of new device detections with timestamps
 - network_vulnerability.log – Log of discovered vulnerabilities
-- spinet.log (optional) – Console output when run via cron
+- PiNetScan.log (optional) – Console output when run via cron
 
 ## Important Notes
 - **Only scan networks you own or have explicit permission to scan.**
