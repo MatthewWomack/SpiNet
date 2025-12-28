@@ -95,7 +95,7 @@ def detect_changes(current, baseline):
         send_alert("New Device Alert", alert_msg)
         print("New device(s) detected:")
         for host in new_hosts:
-            print("\n" + host)
+            print(f"\n{host}")
         log_changes(new_hosts)
 
 
